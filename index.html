@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STAM ENGINE</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <div class="brand">STAM ENGINE</div>
+        </div>
+
+        <nav class="menu">
+          <button>File</button>
+          <button>Edit</button>
+          <button>View</button>
+          <button>Help</button>
+        </nav>
+
+        <div class="top-actions">
+          <button class="control-btn play-btn" aria-label="Play">
+            <span class="triangle"></span>
+          </button>
+          <button class="control-btn stop-btn" aria-label="Stop">
+            <span class="square"></span>
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="panel left-panel hierarchy-panel">
+          <div class="panel-header hierarchy-header">
+            <span>Hierarchy</span>
+            <button class="add-node-btn" type="button" aria-label="Add node" title="Add node">+</button>
+            <div class="add-node-menu" data-add-node-menu hidden>
+              <button type="button" data-create-node="box">Cube</button>
+              <button type="button" data-create-node="sphere">Sphere</button>
+              <button type="button" data-create-node="plane">Plane</button>
+              <button type="button" data-create-node="cylinder">Cylinder</button>
+              <button type="button" data-create-node="cone">Cone</button>
+              <button type="button" data-create-node="torus">Torus</button>
+              <button type="button" data-create-node="empty">Empty Node</button>
+              <button type="button" data-create-node="directionalLight">Directional Light</button>
+              <button type="button" data-create-node="pointLight">Point Light</button>
+              <button type="button" data-create-node="spotLight">Spot Light</button>
+              <button type="button" data-create-node="camera">Camera</button>
+            </div>
+          </div>
+          <div class="hierarchy-tree">
+            <div class="tree-group">
+              <div class="tree-row group-row">
+                <span class="caret">▼</span>
+                <span class="node-label">Scene</span>
+              </div>
+              <div class="tree-row child-row" data-node="Main Camera">Main Camera</div>
+              <div class="tree-row child-row" data-node="Directional Light">Directional Light</div>
+              <div class="tree-row child-row selected" data-node="Cube">Cube</div>
+            </div>
+          </div>
+        </aside>
+
+        <main class="panel viewport-panel">
+          <div class="panel-header viewport-header">
+            <span>Viewport</span>
+            <div class="gizmo-tools" role="toolbar" aria-label="Transform gizmo mode">
+              <button type="button" data-gizmo-mode="position" aria-label="Move gizmo" title="Move (W)">Move</button>
+              <button type="button" data-gizmo-mode="rotation" aria-label="Rotate gizmo" title="Rotate (E)">Rotate</button>
+              <button type="button" data-gizmo-mode="scale" aria-label="Scale gizmo" title="Scale (R)">Scale</button>
+            </div>
+          </div>
+          <canvas id="renderCanvas" tabindex="0" aria-label="3D scene viewport"></canvas>
+        </main>
+
+        <aside class="right-stack">
+          <section class="panel inspector-panel">
+            <div class="panel-header">Inspector</div>
+
+            <div class="inspector-body">
+              <div class="object-header">
+                <div class="obj-icon cube-icon"></div>
+                <span>Cube</span>
+                <span class="chevron">▼</span>
+              </div>
+
+              <div class="inspector-section" data-section="transform">
+                <div class="section-title">Transform</div>
+
+                <div class="field-block">
+                  <label>Position</label>
+                  <div class="vector-grid">
+                    <span>X</span>
+                    <input type="number" data-property="positionX" value="0" step="0.001" />
+                    <span>Y</span>
+                    <input type="number" data-property="positionY" value="0" step="0.001" />
+                    <span>Z</span>
+                    <input type="number" data-property="positionZ" value="0" step="0.001" />
+                  </div>
+                </div>
+
+                <div class="field-block" data-transform-rotation>
+                  <label>Rotation</label>
+                  <div class="vector-grid">
+                    <span>X</span>
+                    <input type="number" data-property="rotationX" value="0" step="0.001" />
+                    <span>Y</span>
+                    <input type="number" data-property="rotationY" value="0" step="0.001" />
+                    <span>Z</span>
+                    <input type="number" data-property="rotationZ" value="0" step="0.001" />
+                  </div>
+                </div>
+
+                <div class="field-block">
+                  <label>Scale</label>
+                  <div class="vector-grid">
+                    <span>X</span>
+                    <input type="number" data-property="scaleX" value="1" step="0.001" />
+                    <span>Y</span>
+                    <input type="number" data-property="scaleY" value="1" step="0.001" />
+                    <span>Z</span>
+                    <input type="number" data-property="scaleZ" value="1" step="0.001" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="inspector-section light-settings" data-section="light" hidden>
+                <div class="section-title">Directional Light</div>
+                <div class="field-block">
+                  <label for="light-intensity">Intensity</label>
+                  <div class="light-control">
+                    <input id="light-intensity" type="range" min="0" max="5" step="0.05" value="1.2" />
+                    <input data-light-property="intensity" type="number" min="0" max="5" step="0.05" value="1.2" />
+                  </div>
+                </div>
+                <div class="field-block">
+                  <label for="light-color">Color</label>
+                  <input id="light-color" class="color-input" data-light-property="color" type="color" value="#ffffff" />
+                </div>
+                <div class="field-block">
+                  <label>Direction</label>
+                  <div class="vector-grid">
+                    <span>X</span>
+                    <input data-light-property="directionX" type="number" value="-1" step="0.1" />
+                    <span>Y</span>
+                    <input data-light-property="directionY" type="number" value="-2" step="0.1" />
+                    <span>Z</span>
+                    <input data-light-property="directionZ" type="number" value="1" step="0.1" />
+                  </div>
+                </div>
+                <label class="toggle-row">
+                  <input data-light-property="enabled" type="checkbox" checked />
+                  <span>Light enabled</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-light-property="shadows" type="checkbox" checked />
+                  <span>Cast shadows</span>
+                </label>
+              </div>
+
+              <div class="inspector-section" data-section="mesh-filter">
+                <div class="section-title">Mesh Filter</div>
+                <div class="property-row">
+                  <span class="label-stack">Mesh</span>
+                  <div class="select-box">Cube</div>
+                </div>
+              </div>
+
+              <div class="inspector-section" data-section="mesh-renderer">
+                <div class="section-title">Mesh Renderer</div>
+                <div class="property-row material-row">
+                  <span class="label-stack">Material</span>
+                  <div class="material-box">Default Material</div>
+                </div>
+              </div>
+
+              <div class="inspector-section postprocess-settings" data-section="postprocessing">
+                <div class="section-title">Post Processing</div>
+                <label class="toggle-row">
+                  <input data-postprocess="motionBlur" type="checkbox" />
+                  <span>Motion blur</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-postprocess="bloom" type="checkbox" checked />
+                  <span>Bloom / glow</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-postprocess="depthOfField" type="checkbox" />
+                  <span>Depth of field</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-postprocess="chromaticAberration" type="checkbox" />
+                  <span>Chromatic aberration</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-postprocess="grain" type="checkbox" />
+                  <span>Film grain</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-postprocess="vignette" type="checkbox" />
+                  <span>Vignette</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-postprocess="sharpen" type="checkbox" />
+                  <span>Sharpen</span>
+                </label>
+                <label class="toggle-row">
+                  <input data-postprocess="fxaa" type="checkbox" checked />
+                  <span>Anti-aliasing (FXAA)</span>
+                </label>
+              </div>
+
+              <div class="inspector-section sky-settings" data-section="sky">
+                <div class="section-title">Atmosphere &amp; Sky</div>
+                <label class="toggle-row">
+                  <input data-sky-property="enabled" type="checkbox" checked />
+                  <span>Sky and clouds enabled</span>
+                </label>
+                <div class="field-block">
+                  <label for="sky-model">Sky model</label>
+                  <select id="sky-model" class="sky-mode-select" data-sky-property="model">
+                    <option value="hdri" selected>Realistic HDRI</option>
+                    <option value="procedural">Procedural atmosphere</option>
+                  </select>
+                </div>
+                <p class="sky-note">
+                  HDRI: Kloppenheim 06 Puresky by
+                  <a href="https://polyhaven.com/a/kloppenheim_06_puresky" target="_blank" rel="noopener noreferrer">Poly Haven (CC0)</a>.
+                </p>
+                <div class="sky-status" data-sky-status role="status" aria-live="polite">Loading realistic HDRI...</div>
+                <div class="field-block">
+                  <label for="sky-clouds">Cloud coverage</label>
+                  <div class="sky-control">
+                    <input id="sky-clouds" data-sky-property="clouds" type="range" min="0" max="100" step="1" value="62" />
+                    <output data-sky-value="clouds">62%</output>
+                  </div>
+                </div>
+                <div class="field-block">
+                  <label for="sky-turbidity">Atmosphere haze</label>
+                  <div class="sky-control">
+                    <input id="sky-turbidity" data-sky-property="turbidity" type="range" min="1" max="20" step="0.1" value="8" />
+                    <output data-sky-value="turbidity">8.0</output>
+                  </div>
+                </div>
+                <div class="field-block">
+                  <label for="sky-rayleigh">Sky scattering</label>
+                  <div class="sky-control">
+                    <input id="sky-rayleigh" data-sky-property="rayleigh" type="range" min="0.1" max="4" step="0.05" value="2" />
+                    <output data-sky-value="rayleigh">2.00</output>
+                  </div>
+                </div>
+                <div class="field-block">
+                  <label for="sky-sun">Sun elevation</label>
+                  <div class="sky-control">
+                    <input id="sky-sun" data-sky-property="sunElevation" type="range" min="-5" max="85" step="1" value="53" />
+                    <output data-sky-value="sunElevation">53°</output>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel console-panel">
+            <div class="panel-header">Console</div>
+            <div class="console-output" id="consoleOutput"></div>
+          </section>
+        </aside>
+
+        <aside class="panel left-bottom-panel assets-panel">
+          <div class="panel-header">Assets</div>
+          <div class="asset-list">
+            <div class="asset-item">
+              <div class="asset-icon folder-icon"></div>
+              <span>Scenes</span>
+            </div>
+            <div class="asset-item">
+              <div class="asset-icon material-icon"></div>
+              <span>Materials</span>
+            </div>
+            <div class="asset-item">
+              <div class="asset-icon mesh-icon"></div>
+              <span>Meshes</span>
+            </div>
+            <div class="asset-item">
+              <div class="asset-icon texture-icon"></div>
+              <span>Textures</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.min.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.skyMaterial.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
